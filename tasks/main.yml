@@ -1,3 +1,63 @@
-#SPDX-License-Identifier: MIT-0
+# tasks file for ansible-nftables
 ---
-# tasks file for test
+
+- name: Install package (Alpine Linux)...
+  become: true
+  community.general.apk:
+    name: "nftables"
+    state: present
+    update_cache: true
+  when: ansible_facts["os_family"] == 'Alpine'
+  tags:
+    - install
+    - alpine
+
+- name: Install package (Ubuntu Linux)...
+  become: true
+  ansible.builtin.apt:
+    name: "nftables"
+    state: present
+    update_cache: true
+  when: ansible_facts["os_family"] == 'Ubuntu'
+  tags:
+    - install
+    - ubuntu
+
+- name: Install package (Arch Linux)...
+  become: true
+  community.general.pacman:
+    name: "nftables"
+    state: present
+    update_cache: true
+  when: ansible_facts["os_family"] == 'Archlinux'
+  tags:
+    - install
+    - archlinux
+
+- name: Enable start on boot...
+  become: true
+  ansible.builtin.service:
+    name: "nftables"
+    enabled: true
+    state: started
+  tags:
+    - install
+    - alpine
+    - archlinux
+    - ubuntu
+
+- name: Config nftables.conf...
+  become: true
+  ansible.builtin.template:
+    src: nftables.conf.j2
+    dest: "/etc/nftables.conf"
+    owner: "root"
+    group: "root"
+    mode: "0640"
+    backup: true
+  notify: restart nftables
+  tags:
+    - config
+    - alpine
+    - archlinux
+    - ubuntu
