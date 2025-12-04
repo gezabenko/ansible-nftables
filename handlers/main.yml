@@ -1,3 +1,7 @@
-#SPDX-License-Identifier: MIT-0
+# handlers file for ansible-nftables
 ---
-# handlers file for test
+- name: restart nftables
+  become: true
+  ansible.builtin.service:
+    name: "nftables"
+    state: restarted
