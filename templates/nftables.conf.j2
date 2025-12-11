@@ -1,0 +1,44 @@
+#!/usr/sbin/nft -f
+{{ ansible_managed | comment }}
+
+flush ruleset
+
+table inet filter {
+
+  chain global {
+  {% for key in (nft_global.keys() | list | sort) %}
+    # {{ key }}
+  {%   for line in nft_global[key] %}
+    {{ line }}
+  {%   endfor %}
+  {% endfor %}
+  }
+
+  chain input {
+  {% for key in (nft_input.keys() | list | sort) %}
+    # {{ key }}
+  {%   for line in nft_input[key] %}
+    {{ line }}
+  {%   endfor %}
+  {% endfor %}
+  }
+
+  chain output {
+  {% for key in (nft_output.keys() | list | sort) %}
+    # {{ key }}
+  {%   for line in nft_output[key] %}
+    {{ line }}
+  {%   endfor %}
+  {% endfor %}
+  }
+
+  chain forward {
+  {% for key in (nft_forward.keys() | list | sort) %}
+    # {{ key }}
+  {%   for line in nft_forward[key] %}
+    {{ line }}
+  {%   endfor %}
+  {% endfor %}
+  }
+}
+

@@ -1,3 +1,38 @@
-#SPDX-License-Identifier: MIT-0
+# defaults file for ansible-nftables
 ---
-# defaults file for test
+nft_enable_nat: false
+
+nft_global:
+  "000 policy":
+    - "type filter hook input priority filter"
+    - "policy drop"
+  "001 ct":
+    - "ct state established,related accept"
+    - "ct state invalid drop"
+
+nft_input:
+  "000 jump global":
+    - "jump global"
+  "001 allow loopback":
+    - "iif lo accept"
+  "010 allow icmp echo":
+    - "icmp type { echo-request, echo-reply } accept"
+    - "icmpv6 type { echo-request, echo-reply } accept"
+  "900 log and drop":
+    - 'counter log prefix "FW-IN " drop'
+
+nft_output:
+  "000 jump global":
+    - "jump global"
+  "001 allow loopback":
+    - "oif lo accept"
+  "010 allow icmp echo":
+    - "icmp type { echo-request, echo-reply } accept"
+    - "icmpv6 type { echo-request, echo-reply } accept"
+  "900 log and drop":
+    - 'counter log prefix "FW-OUT " drop'
+
+nft_forward: {}
+
+nft_nat_prerouting: {}
+nft_nat_postrouting: {}

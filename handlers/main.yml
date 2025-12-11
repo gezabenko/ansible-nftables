@@ -5,3 +5,9 @@
   ansible.builtin.service:
     name: "nftables"
     state: restarted
+
+- name: reload nftables
+  become: true
+  ansible.builtin.service:
+    name: "nftables"
+    state: reloaded
